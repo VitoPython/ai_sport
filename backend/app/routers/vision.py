@@ -2,6 +2,7 @@
 
 import base64
 
+import anthropic
 from fastapi import APIRouter, File, UploadFile, HTTPException
 
 from ..claude_client import client, MODEL
@@ -33,27 +34,33 @@ async def analyze_food(photo: UploadFile = File(...)) -> FoodAnalysis:
     b64 = base64.standard_b64encode(data).decode("utf-8")
 
     # Structured output: модель повертає рівно структуру FoodAnalysis.
-    response = client.messages.parse(
-        model=MODEL,
-        max_tokens=2048,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "image",
-                        "source": {
-                            "type": "base64",
-                            "media_type": media_type,
-                            "data": b64,
+    try:
+        response = client.messages.parse(
+            model=MODEL,
+            max_tokens=2048,
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image",
+                            "source": {
+                                "type": "base64",
+                                "media_type": media_type,
+                                "data": b64,
+                            },
                         },
-                    },
-                    {"type": "text", "text": PROMPT},
-                ],
-            }
-        ],
-        output_format=FoodAnalysis,
-    )
+                        {"type": "text", "text": PROMPT},
+                    ],
+                }
+            ],
+            output_format=FoodAnalysis,
+        )
+    except anthropic.BadRequestError as e:
+        # Напр. зображення замале/пошкоджене — це проблема вводу, не сервера.
+        raise HTTPException(status_code=400, detail=f"Не вдалося обробити зображення: {e.message}") from e
+    except anthropic.APIError as e:
+        raise HTTPException(status_code=502, detail=f"Помилка Claude API: {e}") from e
 
     if response.parsed_output is None:
         raise HTTPException(status_code=502, detail="Не вдалося розпізнати страву")

@@ -1,6 +1,7 @@
 """AI-асистент: чат із Claude + tool use (доступ до тренувань/профілю)."""
 
-from fastapi import APIRouter
+import anthropic
+from fastapi import APIRouter, HTTPException
 
 from ..claude_client import client, MODEL
 from ..schemas import ChatRequest, ChatResponse
@@ -26,14 +27,17 @@ def chat(req: ChatRequest) -> ChatResponse:
 
     # Ручний agentic-цикл: крутимо, доки Claude викликає інструменти.
     for _ in range(MAX_TOOL_ITERATIONS):
-        response = client.messages.create(
-            model=MODEL,
-            max_tokens=4096,
-            system=SYSTEM_PROMPT,
-            thinking={"type": "adaptive"},
-            tools=TOOLS,
-            messages=messages,
-        )
+        try:
+            response = client.messages.create(
+                model=MODEL,
+                max_tokens=4096,
+                system=SYSTEM_PROMPT,
+                thinking={"type": "adaptive"},
+                tools=TOOLS,
+                messages=messages,
+            )
+        except anthropic.APIError as e:
+            raise HTTPException(status_code=502, detail=f"Помилка Claude API: {e}") from e
 
         if response.stop_reason != "tool_use":
             break
