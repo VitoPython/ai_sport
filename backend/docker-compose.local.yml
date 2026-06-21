@@ -1,5 +1,5 @@
 # Compose для локального запуску (без Traefik/Dokploy).
-# Публікує порт 8000 і читає змінні з backend/.env.
+# Піднімає API + локальний MongoDB. Читає змінні з backend/.env для ${...}.
 #
 #   docker compose -f docker-compose.local.yml up --build
 #
@@ -17,5 +17,20 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       CLAUDE_MODEL: ${CLAUDE_MODEL:-claude-opus-4-8}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
+      MONGO_URL: mongodb://mongo:27017
+      MONGO_DB: ${MONGO_DB:-ai_sport}
+    depends_on:
+      - mongo
     ports:
       - "8000:8000"
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"   # для доступу з хоста (Compass тощо); прибери, якщо не потрібно
+
+volumes:
+  mongo_data:

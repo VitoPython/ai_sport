@@ -11,7 +11,7 @@ router = APIRouter(prefix="/sync", tags=["sync"])
 @router.post("/workouts")
 def sync_workouts(user_id: str, workouts: list[WorkoutSync]) -> dict:
     added = store.save_workouts(user_id, workouts)
-    return {"added": added, "total": len(store.get_workouts(user_id, limit=10_000))}
+    return {"added": added, "total": store.count_workouts(user_id)}
 
 
 @router.get("/workouts")

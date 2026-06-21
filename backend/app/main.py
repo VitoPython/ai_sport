@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import settings
+from .db import ping_db
 from .routers import chat, vision, sync
 
 app = FastAPI(
@@ -25,4 +26,8 @@ app.include_router(sync.router)
 
 @app.get("/health", tags=["meta"])
 def health() -> dict:
-    return {"status": "ok", "model": settings.claude_model}
+    return {
+        "status": "ok",
+        "model": settings.claude_model,
+        "db": "ok" if ping_db() else "down",
+    }

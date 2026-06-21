@@ -16,6 +16,9 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       CLAUDE_MODEL: ${CLAUDE_MODEL:-claude-opus-4-8}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
+      # MONGO_URL — внутрішній connection URL Mongo-сервісу з Dokploy.
+      MONGO_URL: ${MONGO_URL}
+      MONGO_DB: ${MONGO_DB:-ai_sport}
     networks:
       - dokploy-network
     labels:
