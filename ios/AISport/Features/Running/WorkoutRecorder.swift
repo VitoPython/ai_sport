@@ -117,6 +117,16 @@ final class WorkoutRecorder {
 
         Task { await health.saveWorkout(session) }
 
+        // Синхронізація на бекенд (для AI-асистента). Best-effort.
+        let dto = WorkoutDTO(session: session)
+        Task {
+            do {
+                try await APIClient.shared.syncWorkouts([dto])
+            } catch {
+                print("Не вдалося синхронізувати тренування: \(error)")
+            }
+        }
+
         reset()
     }
 

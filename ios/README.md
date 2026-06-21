@@ -24,16 +24,27 @@
 
 ```
 AISport/
-├─ App/        AISportApp.swift           — точка входу, налаштування SwiftData
-├─ Models/     ActivityType, WorkoutSession, RoutePoint, HeartRateSample
-├─ Health/     LocationService, MotionService, HealthKitService
+├─ App/         AISportApp.swift          — точка входу, SwiftData, вкладки
+├─ Models/      ActivityType, WorkoutSession, RoutePoint, HeartRateSample
+├─ Health/      LocationService, MotionService, HealthKitService
+├─ Networking/  APIConfig, DTOs, APIClient — клієнт до бекенду
 ├─ Features/
-│  ├─ Running/ WorkoutRecorder (стан сесії), RunningView
-│  └─ History/ HistoryView, WorkoutDetailView
-├─ Support/    Formatters
+│  ├─ Running/   WorkoutRecorder (стан сесії), RunningView
+│  ├─ History/   HistoryView, WorkoutDetailView
+│  ├─ Assistant/ ChatView — чат із AI-асистентом (/chat)
+│  └─ Nutrition/ FoodView — калорії по фото (/vision)
+├─ Support/     Formatters
 └─ Info-keys.md   — які ключі додати в Info.plist
 ```
 
-## Що далі
-Після Фази 1 додамо `ChatView` (AI-асистент) і `FoodPhotoView` (калорії по фото) — вони
-ходитимуть у бекенд (`../backend`).
+## Підключення до бекенду
+
+- Базовий URL і `user_id` — у [AISport/Networking/APIConfig.swift](AISport/Networking/APIConfig.swift).
+  За замовчуванням указує на прод (Dokploy). Заміни на свій домен за потреби.
+- Тренування синхронізуються автоматично після завершення (`/sync/workouts`).
+- Вкладка **Асистент** → `/chat`, **Харчування** → `/vision`.
+
+> ⚠️ **ATS (App Transport Security):** iOS вимагає валідний HTTPS-сертифікат. Тимчасовий
+> `traefik.me` дає недовірений сертифікат — на реальному пристрої запити можуть блокуватись.
+> Рішення: підключити власний домен із Let's Encrypt, або (тільки для розробки) додати
+> виняток ATS у Info.plist. Для прод — власний домен.

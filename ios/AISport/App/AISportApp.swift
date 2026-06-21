@@ -26,8 +26,7 @@ struct AISportApp: App {
     }
 }
 
-/// Кореневий екран із вкладками. Фаза 1 — тільки трекер та історія.
-/// Пізніше додамо вкладки «Асистент» і «Харчування».
+/// Кореневий екран із вкладками.
 struct RootView: View {
     var body: some View {
         TabView {
@@ -36,6 +35,12 @@ struct RootView: View {
 
             HistoryView()
                 .tabItem { Label("Історія", systemImage: "list.bullet.rectangle") }
+
+            ChatView()
+                .tabItem { Label("Асистент", systemImage: "bubble.left.and.bubble.right") }
+
+            FoodView()
+                .tabItem { Label("Харчування", systemImage: "fork.knife") }
         }
     }
 }
