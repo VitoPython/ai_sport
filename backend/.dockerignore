@@ -1,0 +1,23 @@
+# Віртуальні середовища
+.venv/
+venv/
+
+# Python кеш
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Секрети — у контейнер передаються через env, а не файлом
+.env
+.env.*
+!.env.example
+
+# Інше
+*.log
+.git/
+.gitignore
+README.md
+docker-compose*.yml

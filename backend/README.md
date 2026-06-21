@@ -16,6 +16,37 @@ uvicorn app.main:app --reload
 
 Документація API (Swagger): http://127.0.0.1:8000/docs
 
+## Запуск у Docker (локально)
+
+```bash
+cd backend
+copy .env.example .env          # впиши ANTHROPIC_API_KEY
+docker compose -f docker-compose.local.yml up --build
+```
+
+Swagger: http://127.0.0.1:8000/docs · Health: http://127.0.0.1:8000/health
+
+## Деплой на Dokploy
+
+Бекенд готовий до деплою через **Docker Compose** у Dokploy (Traefik + Let's Encrypt).
+
+1. **Create → Compose**, під'єднай репозиторій `VitoPython/ai_sport`.
+2. **Compose Path:** `backend/docker-compose.yml`.
+3. **Environment** — додай змінні:
+   - `ANTHROPIC_API_KEY` — твій ключ Claude
+   - `CLAUDE_MODEL` — `claude-opus-4-8` (необов'язково)
+   - `ALLOWED_ORIGINS` — домени клієнта або `*`
+4. У [docker-compose.yml](docker-compose.yml) заміни `api.example.com` на свій домен
+   (DNS A-запис має вказувати на сервер). Імена роутера/сервісу `ai-sport` тримай
+   унікальними серед усіх застосунків.
+5. **Deploy.** Traefik сам випустить TLS-сертифікат; API буде на `https://<твій-домен>`.
+
+> Альтернатива — тип **Application** (за `backend/Dockerfile`): вкажи порт `8000` і додай
+> домен в UI, Traefik-мітки Dokploy проставить автоматично (тоді compose не потрібен).
+
+**Чому 1 worker:** [store.py](app/store.py) тримає дані в пам'яті (одне на процес).
+Після переходу на Postgres (Фаза 2) піднімемо кількість воркерів у [Dockerfile](Dockerfile).
+
 ## Ендпоінти
 
 | Метод | Шлях | Призначення |

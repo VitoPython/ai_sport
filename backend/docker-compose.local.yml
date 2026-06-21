@@ -1,0 +1,21 @@
+# Compose для локального запуску (без Traefik/Dokploy).
+# Публікує порт 8000 і читає змінні з backend/.env.
+#
+#   docker compose -f docker-compose.local.yml up --build
+#
+# Swagger: http://127.0.0.1:8000/docs
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ai-sport-api:local
+    restart: unless-stopped
+    # Compose автоматично читає backend/.env для підстановки ${...} нижче.
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      CLAUDE_MODEL: ${CLAUDE_MODEL:-claude-opus-4-8}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
+    ports:
+      - "8000:8000"
