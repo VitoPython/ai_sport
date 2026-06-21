@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
 from .config import settings
 from .db import ping_db
@@ -22,6 +23,11 @@ app.add_middleware(
 app.include_router(chat.router)
 app.include_router(vision.router)
 app.include_router(sync.router)
+
+
+@app.get("/", include_in_schema=False)
+def root() -> RedirectResponse:
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/health", tags=["meta"])
