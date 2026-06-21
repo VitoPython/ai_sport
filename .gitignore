@@ -1,0 +1,43 @@
+# ───── macOS ─────
+.DS_Store
+
+# ───── Xcode / iOS ─────
+ios/build/
+ios/DerivedData/
+*.xcuserstate
+*.xcuserdatad/
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+ios/.swiftpm/
+Pods/
+Carthage/Build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# ───── Python / backend ─────
+backend/.venv/
+backend/venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ───── Secrets / env ─────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ───── IDE ─────
+.idea/
+.vscode/
+*.swp
+
+# ───── Logs / temp ─────
+*.log
+tmp/
