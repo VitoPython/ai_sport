@@ -1,9 +1,7 @@
 # Compose для деплою на Dokploy.
-# Dokploy маршрутизує трафік через Traefik у мережі dokploy-network — порти НЕ публікуємо.
-# Змінні (ANTHROPIC_API_KEY тощо) задаються в Dokploy → Environment.
-#
-# ВАЖЛИВО: заміни api.example.com на свій домен і тримай імена роутера/сервісу
-# (ai-sport) унікальними серед усіх застосунків на сервері.
+# Сервіс у мережі dokploy-network; домен і TLS додаються через Dokploy → вкладка Domains
+# (Service Name: api, Container Port: 8000) — мітки Traefik проставить сам Dokploy.
+# Змінні (ANTHROPIC_API_KEY, MONGO_URL тощо) задаються в Dokploy → Environment.
 
 services:
   api:
@@ -16,17 +14,11 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       CLAUDE_MODEL: ${CLAUDE_MODEL:-claude-opus-4-8}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-*}
-      # MONGO_URL — внутрішній connection URL Mongo-сервісу з Dokploy.
+      # MONGO_URL — Internal Connection URL Mongo-сервісу з Dokploy.
       MONGO_URL: ${MONGO_URL}
       MONGO_DB: ${MONGO_DB:-ai_sport}
     networks:
       - dokploy-network
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.ai-sport.rule=Host(`api.example.com`)
-      - traefik.http.routers.ai-sport.entrypoints=websecure
-      - traefik.http.routers.ai-sport.tls.certresolver=letsencrypt
-      - traefik.http.services.ai-sport.loadbalancer.server.port=8000
 
 networks:
   dokploy-network:

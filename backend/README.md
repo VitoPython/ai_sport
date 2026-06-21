@@ -42,14 +42,14 @@ Swagger: http://127.0.0.1:8000/docs · Health: http://127.0.0.1:8000/health
    - `MONGO_DB` — назва БД (напр. `ai_sport`)
    - `CLAUDE_MODEL` — `claude-opus-4-8` (необов'язково)
    - `ALLOWED_ORIGINS` — домени клієнта або `*`
-4. У [docker-compose.yml](docker-compose.yml) заміни `api.example.com` на свій домен
-   (DNS A-запис має вказувати на сервер). Імена роутера/сервісу `ai-sport` тримай
-   унікальними серед усіх застосунків.
-5. **Deploy.** Traefik сам випустить TLS-сертифікат; API буде на `https://<твій-домен>`.
-   Перевірка: `GET /health` має повернути `"db":"ok"`.
+4. **Deploy** (кнопка у Compose-сервісі).
+5. **Domains** (вкладка) → **Add Domain**: Service Name `api`, Container Port `8000`,
+   увімкни HTTPS (Let's Encrypt). Або введи власний домен (DNS A-запис → сервер),
+   або згенеруй тимчасовий. Мітки Traefik Dokploy проставить сам.
+6. Перевірка: `GET https://<домен>/health` → `"db":"ok"`.
 
 > Mongo і API мають бути в одній мережі `dokploy-network` (так і налаштовано) — тоді
-> API резолвить Mongo за внутрішнім іменем із connection URL.
+> API резолвить Mongo за внутрішнім іменем (App Name) із Internal Connection URL.
 
 > Альтернатива — тип **Application** (за `backend/Dockerfile`): вкажи порт `8000` і додай
 > домен в UI, Traefik-мітки Dokploy проставить автоматично (тоді compose не потрібен).
