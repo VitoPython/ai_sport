@@ -47,3 +47,10 @@ def get_workouts(user_id: str, limit: int = 20) -> list[dict]:
 def get_profile(user_id: str) -> dict:
     doc = _profiles.find_one({"user_id": user_id}, _HIDE)
     return doc or {"note": "Профіль ще не заповнено"}
+
+
+def save_profile(user_id: str, data: dict) -> None:
+    """Часткове оновлення профілю — оновлює лише передані поля."""
+    if not data:
+        return
+    _profiles.update_one({"user_id": user_id}, {"$set": data}, upsert=True)

@@ -67,6 +67,11 @@ Swagger: http://127.0.0.1:8000/docs · Health: http://127.0.0.1:8000/health
 | POST | `/vision` | Фото страви → калорії та БЖВ |
 | POST | `/sync/workouts?user_id=...` | Прийняти тренування з iOS |
 | GET | `/sync/workouts?user_id=...` | Список тренувань користувача |
+| GET | `/profile?user_id=...` | Профіль користувача |
+| PUT | `/profile?user_id=...` | Оновити профіль (часткове) |
+
+Асистент (`/chat`) має інструменти `get_workouts`, `get_profile`, `update_profile` —
+може зчитувати історію й зберігати ціль/рівень прямо з розмови.
 
 ## Структура
 

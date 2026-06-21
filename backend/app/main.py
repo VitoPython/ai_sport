@@ -4,7 +4,7 @@ from fastapi.responses import RedirectResponse
 
 from .config import settings
 from .db import ping_db
-from .routers import chat, vision, sync
+from .routers import chat, vision, sync, profile
 
 app = FastAPI(
     title="AI Sport Assistant API",
@@ -23,6 +23,7 @@ app.add_middleware(
 app.include_router(chat.router)
 app.include_router(vision.router)
 app.include_router(sync.router)
+app.include_router(profile.router)
 
 
 @app.get("/", include_in_schema=False)

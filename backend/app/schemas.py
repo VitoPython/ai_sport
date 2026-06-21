@@ -37,6 +37,18 @@ class FoodAnalysis(BaseModel):
     notes: str | None = None
 
 
+# ───── Профіль користувача ─────
+
+class Profile(BaseModel):
+    goal: str | None = Field(default=None, description="Ціль: схуднення / марафон / підтримка форми тощо")
+    experience_level: str | None = Field(default=None, description="beginner | intermediate | advanced")
+    weight_kg: float | None = None
+    height_cm: float | None = None
+    age: int | None = None
+    weekly_target_runs: int | None = Field(default=None, description="Цільова кількість пробіжок на тиждень")
+    notes: str | None = None
+
+
 # ───── Синхронізація тренувань ─────
 
 class WorkoutSync(BaseModel):
